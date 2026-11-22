@@ -3,7 +3,9 @@
  * Connects to the FastAPI backend and handles image URL resolutions
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+const API_BASE_URL = 
+  import.meta.env.VITE_API_URL || 
+  (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000/api` : 'http://localhost:8000/api');
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
 
 /**
