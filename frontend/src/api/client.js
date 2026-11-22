@@ -45,6 +45,16 @@ export function getBackdropUrl(path, size = 'original') {
   return `${TMDB_IMAGE_BASE}/${size}${path}`;
 }
 
+// Universal safe fetch with timeout that works across all mobile browsers and iOS versions
+function fetchWithTimeout(url, options = {}, timeoutMs = 4000) {
+  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  const timeoutId = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+  const fetchOpts = controller ? { ...options, signal: controller.signal } : options;
+  return fetch(url, fetchOpts).finally(() => {
+    if (timeoutId) clearTimeout(timeoutId);
+  });
+}
+
 // Client-side helper functions for zero-failure resilience
 function getLocalTrending(page = 1) {
   const sorted = [...localMovies].sort((a, b) => (b.vote_count * b.vote_average) - (a.vote_count * a.vote_average));
@@ -168,7 +178,7 @@ export const api = {
   // Movie discovery & trending
   async getTrending(page = 1) {
     try {
-      const res = await fetch(`${API_BASE_URL}/movies/trending?page=${page}`, { signal: AbortSignal.timeout(4000) });
+      const res = await fetchWithTimeout(`${API_BASE_URL}/movies/trending?page=${page}`, {}, 4000);
       if (res.ok) {
         const data = await res.json();
         if (data.results && data.results.length > 0) return data;
@@ -181,7 +191,7 @@ export const api = {
 
   async getPopular(page = 1) {
     try {
-      const res = await fetch(`${API_BASE_URL}/movies/popular?page=${page}`, { signal: AbortSignal.timeout(4000) });
+      const res = await fetchWithTimeout(`${API_BASE_URL}/movies/popular?page=${page}`, {}, 4000);
       if (res.ok) {
         const data = await res.json();
         if (data.results && data.results.length > 0) return data;
@@ -194,7 +204,7 @@ export const api = {
 
   async getGenres() {
     try {
-      const res = await fetch(`${API_BASE_URL}/movies/genres`, { signal: AbortSignal.timeout(4000) });
+      const res = await fetchWithTimeout(`${API_BASE_URL}/movies/genres`, {}, 4000);
       if (res.ok) {
         const data = await res.json();
         if (data.genres && data.genres.length > 0) return data;
@@ -208,7 +218,7 @@ export const api = {
   async searchMovies(query, page = 1) {
     if (!query?.trim()) return { results: [] };
     try {
-      const res = await fetch(`${API_BASE_URL}/movies/search?q=${encodeURIComponent(query)}&page=${page}`, { signal: AbortSignal.timeout(4000) });
+      const res = await fetchWithTimeout(`${API_BASE_URL}/movies/search?q=${encodeURIComponent(query)}&page=${page}`, {}, 4000);
       if (res.ok) return await res.json();
     } catch (e) {
       console.warn('Backend search unreachable; searching local catalog:', e);
@@ -233,7 +243,7 @@ export const api = {
       if (params.sort_by) q.append('sort_by', params.sort_by);
       q.append('page', params.page || 1);
 
-      const res = await fetch(`${API_BASE_URL}/movies/discover?${q.toString()}`, { signal: AbortSignal.timeout(4000) });
+      const res = await fetchWithTimeout(`${API_BASE_URL}/movies/discover?${q.toString()}`, {}, 4000);
       if (res.ok) return await res.json();
     } catch (e) {
       console.warn('Backend discover unreachable; filtering local catalog:', e);
@@ -244,7 +254,7 @@ export const api = {
   async getMovieDetails(id) {
     const numId = parseInt(id);
     try {
-      const res = await fetch(`${API_BASE_URL}/movies/${numId}`, { signal: AbortSignal.timeout(4000) });
+      const res = await fetchWithTimeout(`${API_BASE_URL}/movies/${numId}`, {}, 4000);
       if (res.ok) return await res.json();
     } catch (e) {
       console.warn(`Backend details unreachable for movie ${numId}; using local item:`, e);
@@ -260,7 +270,7 @@ export const api = {
   async getSimilarMovies(id, limit = 10) {
     const numId = parseInt(id);
     try {
-      const res = await fetch(`${API_BASE_URL}/movies/${numId}/similar?limit=${limit}`, { signal: AbortSignal.timeout(4000) });
+      const res = await fetchWithTimeout(`${API_BASE_URL}/movies/${numId}/similar?limit=${limit}`, {}, 4000);
       if (res.ok) return await res.json();
     } catch (e) {
       console.warn(`Backend similar unreachable for movie ${numId}; calculating client-side:`, e);
@@ -271,7 +281,7 @@ export const api = {
   // Machine Learning Recommender
   async getCandidates(limit = 60) {
     try {
-      const res = await fetch(`${API_BASE_URL}/recommendations/candidates?limit=${limit}`, { signal: AbortSignal.timeout(4000) });
+      const res = await fetchWithTimeout(`${API_BASE_URL}/recommendations/candidates?limit=${limit}`, {}, 4000);
       if (res.ok) return await res.json();
     } catch (e) {
       console.warn('Backend candidates unreachable; serving local candidates:', e);
@@ -281,12 +291,11 @@ export const api = {
 
   async getRecommendations(favoriteIds, topN = 10) {
     try {
-      const res = await fetch(`${API_BASE_URL}/recommendations`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/recommendations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ favorite_ids: favoriteIds, top_n: topN }),
-        signal: AbortSignal.timeout(5000)
-      });
+        body: JSON.stringify({ favorite_ids: favoriteIds, top_n: topN })
+      }, 5000);
       if (res.ok) return await res.json();
     } catch (e) {
       console.warn('Backend recommendation service unreachable; calculating client-side:', e);
@@ -300,7 +309,7 @@ export const api = {
 
   async getHealth() {
     try {
-      const res = await fetch(`${API_BASE_URL}/health`, { signal: AbortSignal.timeout(3000) });
+      const res = await fetchWithTimeout(`${API_BASE_URL}/health`, {}, 3000);
       if (res.ok) return await res.json();
     } catch (e) {
       // Fallback
