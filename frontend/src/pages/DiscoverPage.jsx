@@ -6,6 +6,7 @@ import MovieCard from '../components/MovieCard';
 
 const GENRES_LIST = [
   'All',
+  'Indian Cinema',
   'Action',
   'Science Fiction',
   'Drama',

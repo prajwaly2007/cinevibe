@@ -10,6 +10,7 @@ import { useWatchlist } from '../context/WatchlistContext';
 export default function HomePage() {
   const [trending, setTrending] = useState([]);
   const [popular, setPopular] = useState([]);
+  const [indianMovies, setIndianMovies] = useState([]);
   const [genres, setGenres] = useState([]);
   const [aiRecs, setAiRecs] = useState([]);
   const [featuredMovie, setFeaturedMovie] = useState(null);
@@ -20,17 +21,20 @@ export default function HomePage() {
     async function loadHomeData() {
       try {
         setLoading(true);
-        const [trendingData, popularData, genresData] = await Promise.all([
+        const [trendingData, popularData, genresData, indianData] = await Promise.all([
           api.getTrending(1),
           api.getPopular(1),
-          api.getGenres()
+          api.getGenres(),
+          api.discoverMovies({ genre: 'Indian Cinema', page: 1, sort_by: 'popularity.desc' })
         ]);
 
         const trendingMovies = trendingData.results || [];
         const popularMovies = popularData.results || [];
+        const indianList = indianData.results || [];
 
         setTrending(trendingMovies);
         setPopular(popularMovies);
+        setIndianMovies(indianList);
         setGenres(genresData.genres || []);
 
         // Choose spotlight movie (Inception, Oppenheimer, or first trending)
@@ -119,6 +123,16 @@ export default function HomePage() {
               ))}
             </div>
           </div>
+        )}
+
+        {/* Indian Cinema Blockbusters */}
+        {indianMovies && indianMovies.length > 0 && (
+          <MovieRow
+            title="Indian Cinema Blockbusters"
+            subtitle="Acclaimed epics, high-octane blockbusters, and timeless classics from Indian cinema"
+            movies={indianMovies}
+            seeAllLink="/discover?genre=Indian%20Cinema"
+          />
         )}
 
         {/* Browse by Genre Interactive Grid */}
