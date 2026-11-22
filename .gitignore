@@ -4,10 +4,7 @@ node_modules/
 .pnp.js
 
 # Production build outputs
-dist/
 build/
-!frontend/dist/
-!frontend/dist/**
 
 # Environment and secrets
 .env
