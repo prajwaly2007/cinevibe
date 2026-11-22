@@ -3,9 +3,15 @@
  * Connects to the FastAPI backend and handles image URL resolutions
  */
 
-const API_BASE_URL = 
-  import.meta.env.VITE_API_URL || 
-  (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000/api` : 'http://localhost:8000/api');
+const rawApiUrl = import.meta.env.VITE_API_URL;
+let API_BASE_URL = 'http://localhost:8000/api';
+
+if (rawApiUrl && rawApiUrl.trim() !== '') {
+  const cleanUrl = rawApiUrl.trim().replace(/\/+$/, '');
+  API_BASE_URL = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
+} else if (typeof window !== 'undefined') {
+  API_BASE_URL = `http://${window.location.hostname}:8000/api`;
+}
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
 
 /**

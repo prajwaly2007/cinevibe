@@ -1,8 +1,8 @@
 services:
-  # CineVibe FastAPI Backend Service
+  # 1. CineVibe FastAPI Backend Service
   - type: web
     name: cinevibe-backend
-    env: python
+    runtime: python
     region: oregon
     plan: free
     rootDir: backend
@@ -10,14 +10,12 @@ services:
     startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: TMDB_API_KEY
-        sync: false
-      - key: PORT
-        value: 10000
+        value: 4e44d9029b1270a757cddc766a1bcb63
 
-  # CineVibe Frontend Static Site
+  # 2. CineVibe React Frontend (Static Site)
   - type: web
     name: cinevibe-frontend
-    env: static
+    runtime: static
     region: oregon
     plan: free
     rootDir: frontend
@@ -32,4 +30,4 @@ services:
         fromService:
           type: web
           name: cinevibe-backend
-          property: host
+          envVarKey: RENDER_EXTERNAL_URL
