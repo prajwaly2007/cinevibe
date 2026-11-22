@@ -43,9 +43,39 @@ Inspired by the dark, high-end aesthetics of **Netflix** and **Letterboxd**, Cin
   - Pre-curated presets: *Nolan Mind-Benders*, *Sci-Fi Masters*, *Dark Neo-Noir*, and *My Watchlist*.
   - Real-time vector calculation returning top 10 personalized recommendations with similarity percentages and explainability badges.
 
-- **📡 Resilient TMDB Integration**:
-  - Connects to TMDB API v3 when an API key is provided in `backend/.env`.
-  - Includes a curated offline fallback dataset of 83 critically acclaimed movies across all genres with authentic TMDB IDs, high-resolution posters, and backdrops—ensuring the application works out-of-the-box without requiring an API key.
+- **📡 Resilient TMDB Integration & Verified Posters**:
+  - Direct live TMDB API v3 connectivity with live search and recommendation enrichment.
+  - Bundles a verified catalog of **210+ critically acclaimed and popular movies** across all genres (1970–2024) with authentic TMDB IDs, active high-definition posters, backdrops, and YouTube trailers verified directly against TMDB's CDN.
+  - Built-in multi-layered fallback handlers across all React image components ensuring zero broken poster icons.
+
+---
+
+## 🌐 Production Deployment Options
+
+CineVibe comes pre-configured with turn-key deployment configurations:
+
+### 1. Vercel (Frontend)
+- `frontend/vercel.json` contains single-page application (SPA) rewrites for routing.
+- Set `VITE_API_URL` environment variable to your deployed FastAPI backend URL.
+
+### 2. Render (Full-Stack Blueprint)
+- `render.yaml` automatically sets up both the Python FastAPI backend web service and the static React frontend site with a single click.
+
+### 3. Docker & Docker Compose
+- Run `docker-compose up --build` to deploy the unified containerized application.
+
+---
+
+## 🐙 Pushing to Your GitHub Repository
+
+1. Create a new repository on [GitHub](https://github.com/new) (e.g. `cinevibe`).
+2. Run the helper script:
+   - Double-click [`push_to_github.bat`](push_to_github.bat) and paste your repository URL.
+   - Or run in terminal:
+     ```bash
+     git remote add origin https://github.com/YOUR_USERNAME/cinevibe.git
+     git push -u origin main
+     ```
 
 ---
 
