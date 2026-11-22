@@ -9,7 +9,7 @@ start "CineVibe Frontend (React+Vite)" cmd /c "%~dp0start_frontend.bat"
 echo.
 echo Both servers have been launched!
 echo - Frontend: http://localhost:5173
-echo - Backend:  http://localhost:8000
-echo - Swagger:  http://localhost:8000/docs
+echo - Backend:  http://localhost:5000
+echo - Swagger:  http://localhost:5000/docs
 echo.
 pause

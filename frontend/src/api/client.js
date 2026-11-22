@@ -13,7 +13,7 @@ if (rawApiUrl && rawApiUrl.trim() !== '') {
 } else if (typeof window !== 'undefined') {
   // Local development on Vite dev server
   if (window.location.port === '5173') {
-    API_BASE_URL = `http://${window.location.hostname}:8000/api`;
+    API_BASE_URL = `http://${window.location.hostname}:5000/api`;
   } else {
     // Production on Render / Vercel (same-origin relative URL)
     API_BASE_URL = '/api';

@@ -7,7 +7,7 @@ load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 
 class Settings(BaseModel):
     TMDB_API_KEY: str = os.getenv("TMDB_API_KEY", "")
-    PORT: int = int(os.getenv("PORT", "8000"))
+    PORT: int = int(os.getenv("PORT", "5000"))
     HOST: str = os.getenv("HOST", "0.0.0.0")
     TMDB_BASE_URL: str = "https://api.themoviedb.org/3"
     TMDB_IMAGE_BASE_URL: str = "https://image.tmdb.org/t/p"

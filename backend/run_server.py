@@ -11,8 +11,9 @@ if backend_dir not in sys.path:
     sys.path.insert(0, backend_dir)
 
 if __name__ == "__main__":
+    port = int(os.getenv("PORT", "5000"))
     print("=" * 60)
-    print("Starting CineVibe FastAPI Backend Server on http://localhost:8000")
-    print("Interactive Swagger Documentation at http://localhost:8000/docs")
+    print(f"Starting CineVibe FastAPI Backend Server on http://localhost:{port}")
+    print(f"Interactive Swagger Documentation at http://localhost:{port}/docs")
     print("=" * 60)
-    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=True)
