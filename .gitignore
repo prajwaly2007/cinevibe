@@ -6,6 +6,10 @@ node_modules/
 # Production build outputs
 build/
 
+# Whitelist frontend distribution
+!frontend/dist/
+!frontend/dist/**
+
 # Environment and secrets
 .env
 .env.local
@@ -21,9 +25,7 @@ __pycache__/
 env/
 venv/
 ENV/
-build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
